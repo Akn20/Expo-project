@@ -1,98 +1,197 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function HomeScreen() {
+/* ---------------- TYPES ---------------- */
+
+type RootStackParamList = {
+  Splash: undefined;
+  Login: undefined;
+  Register: undefined;
+  Home: undefined;
+  Profile: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+/* ---------------- REUSABLE COMPONENTS ---------------- */
+
+const AppInput = (props: any) => (
+  <TextInput style={styles.input} {...props} />
+);
+
+const AppButton = ({ title, onPress }: { title: string; onPress: () => void }) => (
+  <Pressable style={styles.button} onPress={onPress}>
+    <Text style={styles.buttonText}>{title}</Text>
+  </Pressable>
+);
+
+const AppHeader = ({ title }: { title: string }) => (
+  <View style={styles.header}>
+    <Text style={styles.headerText}>{title}</Text>
+  </View>
+);
+
+/* ---------------- SCREENS ---------------- */
+
+const SplashScreen = ({ navigation }: any) => {
+  useEffect(() => {
+    setTimeout(() => navigation.replace('Login'), 2000);
+  }, []);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View style={styles.center}>
+      <Text style={styles.logo}>Heaven</Text>
+      <Text>Loading...</Text>
+    </View>
+  );
+};
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+const LoginScreen = ({ navigation }: any) => (
+  <View style={styles.container}>
+    <Text style={styles.title}>Login</Text>
+
+    <AppInput placeholder="Email / Mobile" />
+    <AppInput placeholder="Password" secureTextEntry />
+
+    <AppButton title="Login" onPress={() => navigation.replace('Home')} />
+
+    <Text style={styles.link}>Forgot Password?</Text>
+    <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
+      Create Account
+    </Text>
+  </View>
+);
+
+const RegisterScreen = ({ navigation }: any) => (
+  <View style={styles.container}>
+    <Text style={styles.title}>Register</Text>
+
+    <AppInput placeholder="Name" />
+    <AppInput placeholder="Email / Mobile" />
+    <AppInput placeholder="Password" secureTextEntry />
+    <AppInput placeholder="Confirm Password" secureTextEntry />
+
+    <AppButton title="Register" onPress={() => navigation.replace('Home')} />
+  </View>
+);
+
+const HomeScreen = ({ navigation }: any) => (
+  <View style={{ flex: 1 }}>
+    <AppHeader title="Welcome, User" />
+
+    <View style={styles.menu}>
+      <AppButton title="Profile" onPress={() => navigation.navigate('Profile')} />
+      <AppButton title="Settings" onPress={() => {}} />
+      <AppButton title="About" onPress={() => {}} />
+      <AppButton title="Logout" onPress={() => navigation.replace('Login')} />
+    </View>
+  </View>
+);
+
+const ProfileScreen = () => (
+  <View style={{ flex: 1 }}>
+    <AppHeader title="Profile" />
+
+    <View style={styles.content}>
+      <Text>Name: Wang Li</Text>
+      <Text>Email: Wangli@gmail.com</Text>
+      <Text>Mobile: 9996786745</Text>
+
+      <AppButton title="Edit Profile" onPress={() => {}} />
+    </View>
+  </View>
+);
+
+/* ---------------- EXPORT (NO NavigationContainer) ---------------- */
+
+export default function Index() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
   );
 }
 
+/* ---------------- STYLES ---------------- */
+
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  center: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  logo: {
+    fontSize: 32,
+    fontWeight: 'bold',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
   },
+  title: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  input: {
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    marginBottom: 12,
+    backgroundColor: '#fff',
+  },
+  button: {
+    height: 48,
+    backgroundColor: '#007bff',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  link: {
+    color: '#007bff',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  header: {
+    padding: 16,
+    backgroundColor: '#007bff',
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  menu: {
+    padding: 20,
+  },
+  content: {
+    padding: 20,
+    gap: 10,
+  },
+  logoImage: {
+  width: 120,
+  height: 120,
+  marginBottom: 16,
+},
+
 });
