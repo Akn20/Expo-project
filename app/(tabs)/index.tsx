@@ -9,7 +9,7 @@ import {
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-/* ---------------- TYPES ---------------- */
+
 
 type RootStackParamList = {
   Splash: undefined;
@@ -21,7 +21,7 @@ type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-/* ---------------- REUSABLE COMPONENTS ---------------- */
+
 
 const AppInput = (props: any) => (
   <TextInput style={styles.input} {...props} />
@@ -39,7 +39,7 @@ const AppHeader = ({ title }: { title: string }) => (
   </View>
 );
 
-/* ---------------- SCREENS ---------------- */
+
 
 const SplashScreen = ({ navigation }: any) => {
   useEffect(() => {
@@ -110,7 +110,7 @@ const ProfileScreen = () => (
   </View>
 );
 
-/* ---------------- EXPORT (NO NavigationContainer) ---------------- */
+
 
 export default function Index() {
   return (
@@ -124,7 +124,7 @@ export default function Index() {
   );
 }
 
-/* ---------------- STYLES ---------------- */
+
 
 const styles = StyleSheet.create({
   center: {
